@@ -1,0 +1,45 @@
+import discord
+import asyncio
+import random
+
+# Your bot token and other variables
+TOKEN = 'ur_id'
+GUILD_ID = server_id  # Replace with your server (guild) ID
+messages = ["kill all the femboy fags @everyone", "i said gas the jews not glass of juice @everyone", "@everyone the owner is 42 @everyone", "https://discord.gg/95sJWb7WFC join for nuke tools @everyone", "lmfao imagine getting nuked @everyone", "hydra should die ngl @everyone", "@everyone"]
+
+# Set up intents for the bot
+intents = discord.Intents.default()
+intents.guilds = True
+intents.messages = True
+intents.members = True
+
+client = discord.Client(intents=intents)
+
+@client.event
+async def on_ready():
+    print(f'Logged in as {client.user}')
+    
+    # Get the guild (server) object
+    guild = client.get_guild(GUILD_ID)
+
+    # Function to send a message to every channel in the server
+    async def send_message():
+        while True:
+            message = random.choice(messages)
+            # Iterate over all channels in the server
+            for channel in guild.text_channels:
+                try:
+                    # Check if the bot has permission to send messages in this channel
+                    if channel.permissions_for(guild.me).send_messages:
+                        await channel.send(message)
+                except discord.Forbidden:
+                    print(f"Permission denied for channel: {channel.name}")
+                except Exception as e:
+                    print(f"Error in sending message to channel {channel.name}: {e}")
+            await asyncio.sleep(0)  # Send a message every 5 seconds
+
+    # Run the send_message task
+    client.loop.create_task(send_message())
+
+client.run(TOKEN)
+# created by Or300
